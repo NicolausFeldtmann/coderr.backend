@@ -45,3 +45,21 @@ class RegistrationSerializer(serializers.Serializer):
 
         UserProfile.objects.create(user=user, username=username, first_name=first_name, last_name=last_name, email=email, role=role)
         return user
+
+class UsernameAuthSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(style={"input_type": "password"}, trim_whitespace=False)
+
+    def validate(self, attrs):
+        username = attrs.get("username")
+        password = attrs.get("password")
+
+        try:
+            user = User.objects.get(username__iexact=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"error": "invalid access"})
+        if not user.check_password(password):
+            raise serializers.ValidationError({"error": "invalid access"})
+
+        attrs["user"] = user
+        return attrs
