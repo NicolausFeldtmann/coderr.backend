@@ -1,11 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth.models import User
-from .serializers import RegistrationSerializer, UsernameAuthSerializer
+from user_auth_app.models import UserProfile
+from .serializers import RegistrationSerializer, UsernameAuthSerializer, UserProfileSerializer
+from .permissions import IsOwnerOrAdmin
+
+class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsOwnerOrAdmin]
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
 
 class RegistrationView(APIView):
     permission_classes = [AllowAny]

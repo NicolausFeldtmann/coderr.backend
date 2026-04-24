@@ -6,6 +6,24 @@ from user_auth_app.models import UserProfile
 
 User = get_user_model()
 
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "id", 
+            "user", 
+            "username", 
+            "first_name", 
+            "last_name", 
+            "location", 
+            "tel", 
+            "description", 
+            "role", 
+            "email", 
+            "created_at"
+        ]
+
 class RegistrationSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
