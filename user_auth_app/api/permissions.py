@@ -2,10 +2,14 @@ from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_MET
 
 class IsOwnerOrAdmin(BasePermission):
 
-    def has_objects_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-        elif request.method == "DELETE":
-            return bool(request.user and request.user.is_superuser)
-        else:
-            return bool(request.user and request.user == obj.user)
+        
+        if not request.user or not request.user.is_authenticated:
+            return False
+
+        if request.method == "DELETE":
+            return request.method.user.is_superuser
+
+        return request.user == obj.user or request.user.is_superuser
