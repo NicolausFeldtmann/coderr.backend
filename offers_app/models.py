@@ -11,7 +11,7 @@ class OfferModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return self.title1
 
 class OfferDetails(models.Model):
     offer = models.ForeignKey(OfferModel, related_name="details", null=True, blank=True, on_delete=models.CASCADE)

@@ -97,3 +97,18 @@ class OfferSerializer(serializers.ModelSerializer):
         for i in details_data:
             OfferDetails.objects.create(offer=offer, **i)
         return offer
+
+    def update(self, instance, validated_data):
+        details_data = validated_data.pop("details", None)
+
+        instance.title = validated_data.get("title", instance.title)
+        instance.description = validated_data.get("description", instance.description)
+        instance.image = validated_data.get("image", instance.image)
+        instance.save()
+
+        if details_data is not None:
+            instance.details.all().delete()
+            for details_data in details_data:
+                OfferDetails.objects.create(offer=instance, **details_data)
+        
+        return instance
